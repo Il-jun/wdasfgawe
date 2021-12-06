@@ -30,6 +30,6 @@ void make_fs(){
 		}
 		else {
 			fclose(myfs);
+		}
 	}
-}
 }

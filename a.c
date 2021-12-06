@@ -256,38 +256,65 @@ void mkinode(int inode_num, _Bool type, char * filename)
    printf("\n%s", tmp);
 
    }
-   */
+ */
 
-   void mytouch(char * filename)
-   {
-   FILE * fp;
-   fp = fopen("inode.bin","rb+");
+void mytouch(char * filename)
+{
+	FILE * fp;
+	fp = fopen("inode.bin","rb+");
 
-   inode tmp;
+	inode tmp;
 
-   rewind(fp);
+	rewind(fp);
 
-   while(1)
-   {
-   fread(&tmp, sizeof(inode), 1, fp);
-   if(!strcmp(tmp.filename, filename))
-   break;
-   }
+	while(1)
+	{
+		fread(&tmp, sizeof(inode), 1, fp);
+		if(!strcmp(tmp.filename, filename))
+			break;
+	}
 
-   tmp.time_ = set_time();
+	tmp.time_ = set_time();
 
-   fseek(fp, -sizeof(inode), SEEK_CUR);
+	fseek(fp, -sizeof(inode), SEEK_CUR);
 
-   fwrite(&tmp, sizeof(inode), 1, fp);
+	fwrite(&tmp, sizeof(inode), 1, fp);
 
-   fclose(fp);
-
-
-   }
+	fclose(fp);
 
 
+}
 
 
+
+void mymv(char * name1, char * name2)
+{
+	FILE * fp;
+	fp = fopen("inode.bin","rb+");
+
+	inode tmp;
+
+	rewind(fp);
+
+	while(1)
+	{
+		fread(&tmp, sizeof(inode), 1, fp);
+		if(!strcmp(tmp.filename, name1))
+			break;
+	}
+
+	tmp.filename = name2;
+
+
+
+
+	fseek(fp, -sizeof(inode), SEEK_CUR);
+	fwrite((void *)&tmp, sizeof(inode), 1, fp);
+
+	fclose(fp);
+
+
+}
 
 
 void tmp_inode_2(void) //임시 inode 2개 생성;
@@ -392,7 +419,7 @@ void myls_1(char * file_name) // myls로 파일이름 인자로 있을떄
 	fp = fopen("inode.bin", "rb+");
 
 	inode tmp;
-	
+
 	rewind(fp);
 	while(1)
 	{
@@ -410,87 +437,87 @@ void myls_1(char * file_name) // myls로 파일이름 인자로 있을떄
 	fclose(fp);	
 }
 /*
-int main(void)
-{
-	char * check_fname = "hi";  //생성할 파일 이름
-	mkfirstinode();
-	tmp_inode_2();		//2번, 3번 inode생성
-	mkinode(4, 1, check_fname); //4번 inode생성
+   int main(void)
+   {
+   char * check_fname = "hi";  //생성할 파일 이름
+   mkfirstinode();
+   tmp_inode_2();		//2번, 3번 inode생성
+   mkinode(4, 1, check_fname); //4번 inode생성
 
-	FILE * fp;
-	if ((fp = fopen("inode.bin","rb"))==NULL){
-		fprintf(stderr, "파일 열 수 없음");
-	}
+   FILE * fp;
+   if ((fp = fopen("inode.bin","rb"))==NULL){
+   fprintf(stderr, "파일 열 수 없음");
+   }
 
-	inode tmp;
+   inode tmp;
 
-	rewind(fp);
-
-
-	fread(&tmp, sizeof(inode), 1, fp);
-	printf(" root inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
-
-	fread(&tmp, sizeof(inode), 1, fp);
-	printf(" 2번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
-
-	fread(&tmp, sizeof(inode), 1, fp);
-	printf(" 3번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
-
-	fread(&tmp, sizeof(inode), 1, fp);
-	printf(" 4번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
-	fclose(fp);
-
-	printf("\n");
-
-	int a;
-	printf("myinode로 확인할 inode 번호 : **2번으로 테스트 가능 ** : ");
-	scanf("%d", &a);
-	myinode(a);
-
-	printf("\n");
-
-	char *b = malloc(sizeof(char)*8);
-	printf("myls로 확인할 파일 이름 : ");
-	scanf("%s", b);
-	myls_1(b);
+   rewind(fp);
 
 
-	printf("\n\n\n mystate:\n");
-	mystate();
+   fread(&tmp, sizeof(inode), 1, fp);
+   printf(" root inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+
+   fread(&tmp, sizeof(inode), 1, fp);
+   printf(" 2번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+
+   fread(&tmp, sizeof(inode), 1, fp);
+   printf(" 3번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+
+   fread(&tmp, sizeof(inode), 1, fp);
+   printf(" 4번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+   fclose(fp);
+
+   printf("\n");
+
+   int a;
+   printf("myinode로 확인할 inode 번호 : **2번으로 테스트 가능 ** : ");
+   scanf("%d", &a);
+   myinode(a);
+
+   printf("\n");
+
+   char *b = malloc(sizeof(char)*8);
+   printf("myls로 확인할 파일 이름 : ");
+   scanf("%s", b);
+   myls_1(b);
 
 
-	printf("\n\n\n\n mystouch로 2번 시간 초기화\n\n");
+   printf("\n\n\n mystate:\n");
+   mystate();
 
-	mytouch("hi_b");
 
+   printf("\n\n\n\n mystouch로 2번 시간 초기화\n\n");
 
+   mytouch("hi_b");
 
 
 
 
 
-	printf("\n\n\n최종확인 \n");
-
-	if ((fp = fopen("inode.bin","rb"))==NULL){
-		fprintf(stderr, "파일 열 수 없음");
-	}
-
-	rewind(fp);
 
 
-	fread(&tmp, sizeof(inode), 1, fp);
-	printf(" root inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+   printf("\n\n\n최종확인 \n");
 
-	fread(&tmp, sizeof(inode), 1, fp);
-	printf(" 2번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+   if ((fp = fopen("inode.bin","rb"))==NULL){
+   fprintf(stderr, "파일 열 수 없음");
+   }
 
-	fread(&tmp, sizeof(inode), 1, fp);
-	printf(" 3번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+   rewind(fp);
 
-	fread(&tmp, sizeof(inode), 1, fp);
-	printf(" 4번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
-	fclose(fp);//	printf("myls인자 없을떄\n");
-	//	myls_0(3);
+
+   fread(&tmp, sizeof(inode), 1, fp);
+   printf(" root inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+
+fread(&tmp, sizeof(inode), 1, fp);
+printf(" 2번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+
+fread(&tmp, sizeof(inode), 1, fp);
+printf(" 3번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+
+fread(&tmp, sizeof(inode), 1, fp);
+printf(" 4번  inode 정보 / inode번호 : %d inode type : %d 파일 이름 : %s 생성 시간 : %s\n", tmp.inode_num, tmp.type, tmp.filename, tmp.time_);
+fclose(fp);//	printf("myls인자 없을떄\n");
+//	myls_0(3);
 
 }
 */

@@ -104,7 +104,8 @@ void cmp_comm (char * comm1, char * comm2, char * comm3) {
 		;
 		
 	if (strcmp(comm1, "mymv") == 0)
-		;
+		//mymv(comm2,comm3);
+	;
 		
 	if (strcmp(comm1, "mytouch") == 0) {
 		if (comm2 == NULL) 
