@@ -36,7 +36,8 @@ void save_file_data (int i_num, char * filename){
 	FILE * data_b;
 	FILE * file = fopen(filename, "r");
 	data_b = fopen("datablock.bin", "ab");
-	
+	rewind(data_b);
+
 	while (num < 9) {
 		int e_num = find_empty_datab();
 		fseek(data_b, 256*e_num, 0);
