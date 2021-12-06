@@ -44,6 +44,8 @@ int get_size (int);
 void load_file (int);
 void mkfirst_sblock();
 
+void mymv(char *, char *);
+
 int find_empty_datab ();
 int find_empty_inode ();
 void add_sblock_inode(int);
